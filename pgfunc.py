@@ -11,8 +11,8 @@ except Exception as e:
 
 def fetch_data(tbname):
   try:
-    q="SELECT * FROM" + tbname + ";"
-    cur.excecute(q)
+    q="SELECT * FROM " + tbname + ";"
+    cur.execute(q)
     records=cur.fetchall()
     return records
   except Exception as e:
