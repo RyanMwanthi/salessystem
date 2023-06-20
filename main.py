@@ -1,5 +1,5 @@
 from flask import Flask,render_template
-import psycopg2
+from pgfunc import fetch_data
 
 # create an object called app
 #All HTML files are put inside ""templates" folder
@@ -7,8 +7,7 @@ import psycopg2
 #__name__ is used to help flask where to access HTML files
 
 # CODE STARTS HERE!!
-from flask import Flask,render_template
-import psycopg2
+
 
 app = Flask(__name__)
  
@@ -20,26 +19,20 @@ def home():
 
 @app.route("/products")
 def products():
-    #loading data from the database
-    conn=psycopg2.connect("dbname=duka user= postgres password=12345")
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM products")
-    prods=cur.fetchall()
-    cur.close()
-    conn.close()    
-    return render_template ('products.html',prods=prods)
+    prods=fetch_data("products")
+
+
+    return render_template("products.html", prods=prods)
 
 
 @app.route("/sales")
-def mysales():
-    #import sales data from data base
-    conn=psycopg2.connect("dbname=duka user= postgres password=12345")
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM sales")
-    sales=cur.fetchall()
-    cur.close()
-    conn.close()  
-    return render_template('sales.html',sales=sales)
+def sales():
+    sales=fetch_data("sales")
+
+
+    return render_template("sales.html",sales=sales)
+
+
 
 
 app.run()
