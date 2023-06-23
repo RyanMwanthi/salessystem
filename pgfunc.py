@@ -27,7 +27,7 @@ def insert_products(v):
 
 def insert_sales(v):
   vs=str(v)
-  q="INSERT INTO sales(pid,quantity,created_at)" "values" +vs 
+  q="INSERT INTO sales(pid,quantity,created_at)" "values" +vs  #return created at if it fails
   cur.execute(q)
   conn.commit()
   return(q)

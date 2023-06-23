@@ -75,10 +75,15 @@
                                         <form action="/addsales" method="post">
 
                                             <div class="mb-3">
-                                                <label for="exampleInputPassword1" class="form-label">Pid</label>
-                                                <input type="number" class="form-control" id="exampleInputPassword1"
-                                                    name="pid">
+                                                <label for="exampleInputPassword1" class="form-label">Pid:</label>
+                                                <select name="pid" id="pid">
+                                                    {% for i in prodz %}
+                                                    <option value="{{i[0]}}">"{{i[1]}}"</option>
+                                                    {% endfor %}
+                                                </select>
+
                                             </div>
+
                                             <div class="mb-3">
                                                 <label for="exampleInputPassword1" class="form-label">Quantity
                                                 </label>
@@ -86,12 +91,7 @@
                                                     name="quantity"> <!-- name need to match at main.py-->
                                             </div>
 
-                                            <div class="mb-3">
-                                                <label for="exampleInputPassword1" class="form-label">Created_at
-                                                </label>
-                                                <input type="datetime" class="form-control" id="exampleInputPassword1"
-                                                    name="created_at">
-                                            </div>
+
                                             <button type="submit" class="btn btn-primary">Submit</button>
                                         </form>
                                     </div>
