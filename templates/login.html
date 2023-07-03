@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Login</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <style type="text/css">
+    .container {
+      margin-top: 8%;
+      width: 400px;
+      border: ridge 1.5px white;
+      padding: 20px;
+    }
+
+    body {
+      background: #E0EAFC;
+      /* fallback for old browsers */
+      background: -webkit-linear-gradient(to right, #CFDEF3, #E0EAFC);
+      /* Chrome 10-25, Safari 5.1-6 */
+      background: linear-gradient(to right, #CFDEF3, #E0EAFC);
+      /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container col-lg-6 col-sm-12">
+    <h2>LogIn</h2>
+    <form>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="Email" class="form-control" placeholder="enter email address" id="email">
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" class="form-control" placeholder="Password" id="passwor">
+      </div>
+
+      <button type="submit" class="btn btn-primary">Log In</button>
+      <br>
+      
+      <br>
+      <div>Dont have an account?</div>
+      <button class="btn submits sign-up btn"><a href="/register">Sign up Here</a>
+
+      </button>
+    </form>
+  </div>
+</body>
+
+</html>

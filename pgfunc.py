@@ -1,6 +1,8 @@
 import psycopg2
 
 
+
+
 try:
   conn=psycopg2.connect("dbname=duka user=postgres password=12345")
 
@@ -31,3 +33,45 @@ def insert_sales(v):
   cur.execute(q)
   conn.commit()
   return(q)
+
+
+
+#sales products = spquery
+
+def sales_per_product():
+  spquery="SELECT * FROM sales_per_product"
+  cur.execute(spquery)
+  qu=cur.fetchall()
+  
+  return(qu)
+
+def sales_per_day():
+  spdayquery="SELECT * FROM sales_per_day"
+  cur.execute(spdayquery)
+  sp=cur.fetchall()
+  print(sp)
+  return(sp)
+
+#adding users using register form
+def add_user(v):
+  vs=str(v)
+  add="INSERT INTO users (full_name,email,password,created_at)" "values" +vs
+  cur.execute(add)
+  conn.commit()
+  return(add)
+  
+
+
+
+
+
+
+
+
+
+
+
+    
+  
+
+

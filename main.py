@@ -1,5 +1,6 @@
 from flask import Flask,render_template,request,redirect
-from pgfunc import fetch_data , insert_products, insert_sales
+from pgfunc import fetch_data , insert_products, insert_sales,sales_per_product,sales_per_day,add_user
+import pygal
 
 
 # create an object called app
@@ -21,7 +22,7 @@ def home():
 @app.route("/products")
 def products():
     prods=fetch_data("products")
-    print(prods)
+    
     return render_template("products.html", prods=prods)
 
 
@@ -61,6 +62,71 @@ def addsales():
         sales=(pid,quantity,'now') #return pid if error
         insert_sales(sales)
         return redirect("/sales")
+
+@app.route("/dashboard") 
+def dashboard():   
+   salesperprod=sales_per_product()
+   prod=[]
+   totalsales=[]
+   for i in salesperprod:
+       prod.append(i[0])
+       totalsales.append(i[1])
+   bar_chart=pygal.Bar()
+   bar_chart.title="sales per product"
+   bar_chart.x_labels = prod
+   bar_chart.add("Totalsales",totalsales)
+   bar_chart=bar_chart.render_data_uri()
+    
+   salesperday=sales_per_day()
+   sales=[]
+   date=[]
+   for i in salesperday:
+       sales.append(i[0])
+       date.append(i[1])
+   chart=pygal.Line()
+   chart.title="Sales Per Month"
+   chart.x_labels = sales
+   chart.add("Months",date)
+   chart=chart.render_data_uri()
+
+
+
+
+      
+   return render_template("dashboard.html",bar_chart=bar_chart,chart=chart)
+
+@app.route("/login")
+def login():
+    return render_template('login.html')
+
+
+
+
+@app.route("/register") 
+def register():
+   return render_template('register.html')
+
+@app.route("/signup",methods=["POST","GET"])
+def signup():
+    if request.method == "POST":
+        full_name=request.form["full_name"]     
+        email=request.form["email"]
+        password=request.form["password"]
+        users=(full_name,email,password,'now')
+        add_user(users)
+        return redirect('/login')
+        
+
+
+   
+   
+   
+
+
+
+
+
+   
 
 
 
