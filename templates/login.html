@@ -3,22 +3,22 @@
 
 <head>
   <title>Login</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <link rel="stylesheet" href="/static/login.css">
+    <integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
   <style type="text/css">
     .container {
       margin-top: 8%;
       width: 400px;
-      border: ridge 1.5px white;
+      border: ridge 1.4px rgb(234, 213, 213);
       padding: 20px;
     }
 
     body {
-      background: #E0EAFC;
+      background: #cad8f1;
       /* fallback for old browsers */
-      background: -webkit-linear-gradient(to right, #CFDEF3, #E0EAFC);
+      background: -webkit-linear-gradient(to right, #b7cdeb, #E0EAFC);
       /* Chrome 10-25, Safari 5.1-6 */
-      background: linear-gradient(to right, #CFDEF3, #E0EAFC);
+      background: linear-gradient(to right, #93b4e1, #E0EAFC);
       /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 
     }
@@ -28,26 +28,27 @@
 <body>
   <div class="container col-lg-6 col-sm-12">
     <h2>LogIn</h2>
-    <form>
+    <form action="/login" method="POST">
       <div class="form-group">
         <label for="email">Email</label>
-        <input type="Email" class="form-control" placeholder="enter email address" id="email">
+        <input type="Email" class="form-control" placeholder="Enter email address" name="email">
       </div>
 
       <div class="form-group">
         <label for="password">Password</label>
-        <input type="password" class="form-control" placeholder="Password" id="passwor">
+        <input type="password" class="form-control" placeholder="Password" name="password">
       </div>
 
       <button type="submit" class="btn btn-primary">Log In</button>
       <br>
-      
+
       <br>
       <div>Dont have an account?</div>
-      <button class="btn submits sign-up btn"><a href="/register">Sign up Here</a>
-
-      </button>
+      <button class="btn submits sign-up btn"><a href="/register">Sign up Here</a></button>
     </form>
+    {% if error %}
+    <p style="color: rgb(248, 8, 8);">{{ error }}</p>
+    {% endif %}
   </div>
 </body>
 

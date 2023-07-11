@@ -59,19 +59,47 @@ def add_user(v):
   cur.execute(add)
   conn.commit()
   return(add)
+
+def loggin_in():
+  q="SELECT email,password FROM users"
+  cur.execute(q)
+  ep=cur.fetchall()
+  print(ep)
   
+  return(ep)
 
 
-
-
-
-
-
-
-
-
-
+def updateproducts(products):
     
+        
+        id = products[0]
+        name = products[1]
+        buying_price = products[2]
+        selling_price = products[3]
+        
+        editquery = "UPDATE products SET name = %s, buying_price = %s, selling_price = %s WHERE id = %s"
+        cur.execute(editquery, (name, buying_price, selling_price, id))
+        conn.commit()
+        return editquery
+
+
+def add_stock(s):
+   st=str(s)
+   stock="INSET INTO stock(pid,quantity,created_at)" "VALUES" +st
+   cur.execute(stock)
+   conn.commit
+   return(stock)
+
+def stockremaining():
+   rem="SELECT * FROM remaining_stock "
+   cur.execute(rem)
+   rm=cur.fetchall()
+   return(rm)
+
+#def stockremaining(remaining_stock):
+ #  id = remaining_stock[0]
+  # cur.execute("SELECT remaining_stock FROM remaining_stock WHERE id = %s", (id,))
+   #result = cur.fetchone()
+   #r3eturn result[0] if result else None
+
   
-
-
