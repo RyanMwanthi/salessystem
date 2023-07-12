@@ -85,16 +85,20 @@ def updateproducts(products):
 
 def add_stock(s):
    st=str(s)
-   stock="INSET INTO stock(pid,quantity,created_at)" "VALUES" +st
+   stock="INSERT INTO stock(pid,quantity,created_at)" "VALUES" + st
    cur.execute(stock)
    conn.commit
-   return(stock)
+   return stock
+
+
 
 def stockremaining():
    rem="SELECT * FROM remaining_stock "
    cur.execute(rem)
    rm=cur.fetchall()
    return(rm)
+
+
 
 #def stockremaining(remaining_stock):
  #  id = remaining_stock[0]

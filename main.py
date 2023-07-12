@@ -34,18 +34,14 @@ def sales():
     prodz=fetch_data("products")
     return render_template("sales.html",sales=sales,prodz=prodz)
 
+
 @app.route("/addproduct", methods=["POST","GET"])
 def addproduct():
     if request.method == "POST":
         name=request.form["name"]     
         buying_price=request.form["buying_price"]
         selling_price=request.form["selling_price"]
-        stock_quantity=request.form["stock_quantity"]
-        print(name)
-        print(buying_price)
-        print(selling_price)
-        print(stock_quantity)
-        product=(name,buying_price,selling_price,stock_quantity)
+        product=(name,buying_price,selling_price)
         insert_products(product)
         return redirect("/products")
 
@@ -55,11 +51,7 @@ def addsales():
     if request.method=="POST":        
         pid=request.form["pid"]
         quantity=request.form["quantity"]
-        
-             
-    
         print(quantity)
-       
         sales=(pid,quantity,'now') #return pid if error
         insert_sales(sales)
         return redirect("/sales")
@@ -170,13 +162,13 @@ def stock():
 
    
 
-@app.route('/addstock')
+@app.route('/addstock',methods=["POST","GET"])
 def addstock():
-    if request.form == "POST":
+    if request.method == "POST":
         pid=request.form["pid"]
         quantity=request.form["quantity"]
-        mystock=(pid,quantity,'now()')
-        add_stock(mystock)
+        stock=(pid,quantity,'now')
+        add_stock(stock)
         return redirect("/stock")
     
 

@@ -75,10 +75,10 @@
                                         <form action="/addsales" method="post">
 
                                             <div class="mb-3">
-                                                <label for="exampleInputPassword1" class="form-label">Pid:</label>
+                                                <label for="exampleInputPassword1" class="form-label">Product</label>
                                                 <select name="pid" id="pid">
-                                                    {% for i in prodz %}
-                                                    <option value="{{i[0]}}">"{{i[1]}}"</option>
+                                                    {% for p in prodz %}
+                                                    <option value="{{p[0]}}">"{{p[1]}}"</option>
                                                     {% endfor %}
                                                 </select>
 
@@ -116,7 +116,7 @@
                     <thead>
                         <tr>
                             <th scope="col">Id</th>
-                            <th scope="col">Pid</th>
+                            <th scope="col">Product Name</th>
                             <th scope="col">Quantity</th>
                             <th scope="col">Created at</th>
 
@@ -126,7 +126,13 @@
                         {% for i in sales%}
                         <tr>
                             <td scope="col">{{i[0]}}</td>
-                            <td>{{i[1]}}</td>
+                            <td name="pid">
+                                {% for p in prodz %}
+                                    {% if p[0] == i[1] %}
+                                        {{p[1]}}
+                                    {% endif %}
+                                {% endfor %}
+                            </td>
                             <td>{{i[2]}}</td>
                             <td>{{i[3]}}</td>
                         </tr>

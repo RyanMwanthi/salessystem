@@ -28,18 +28,47 @@
                             Add Stock
                         </button>
                         <!--Modal-->
+                        <div class="modal fade" id="addstock" tabindex="-1" aria-labelledby="addstock"
+                            aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Add a stock</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+
+                                        <form action="/addstock" method="POST">
+
+                                            <select name="pid" id="product">
+                                                <!--<option value="">Select a product</option>-->
+                                                <label for=""></label>
+                                                {% for p in prodx %}
+                                                <option value="{{ p[0] }}">{{ p[1] }}</option>
+                                                {% endfor %}
+                                            </select><br><br>
+                                            <label for="lname">quantity:</label>
+                                            <input type="text" id="lname" name="quantity"><br><br>
+
+                                            <button type="submit" class="btn btn-primary">Submit</button><br>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
                     </div>
                     <div class="col-4">
 
-                    </div>                   
+                    </div>
                 </div>
                 <!--TABLE-->
                 <table id="myTable">
                     <thead>
                         <tr>
                             <th>Id</th>
-                            <th>Product id</th>
+                            <th>Product Name</th>
                             <th>Quantity</th>
                             <th>Created At</th>
                         </tr>
@@ -48,7 +77,13 @@
                         {% for i in stock %}
                         <tr>
                             <td>{{ i[0] }}</td>
-                            <td>{{ i[1] }}</td>
+                            <td name="pid">
+                                {% for p in prodx %}
+                                    {% if p[0] == i[1] %}
+                                        {{p[1]}}
+                                    {% endif %}
+                                {% endfor %}
+                            </td>
                             <td>{{ i[2] }}</td>
                             <td>{{ i[3] }}</td>
                         </tr>
