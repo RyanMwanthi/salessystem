@@ -1,5 +1,5 @@
-from flask import Flask,render_template,request,redirect,session
-from pgfunc import fetch_data , insert_products, insert_sales,sales_per_product,sales_per_day,add_user,loggin_in,updateproducts,add_stock,stockremaining
+from flask import Flask,render_template,request,redirect
+from pgfunc import fetch_data , insert_products, insert_sales,sales_per_product,stockremaining,sales_per_day,add_user,loggin_in,updateproducts,add_stock,remstock_perproduct
 import pygal
 
 
@@ -173,34 +173,19 @@ def addstock():
     
 
 
-#@app.context_processor
-#def inject_processor()
-# :@app.context_processor
-#def my_context_processor():
- #   user_id = request.args.get('user_id')
-  #  user = get_user(user_id)
-   # return dict(user=user)
+@app.context_processor
+def inject_remaining_stock():
+    def remaining_stock(product_id=None):
+      stock = remstock_perproduct(product_id)
+      return stock[0] if stock is not None else int('0')
+    return {'remaining_stock': remaining_stock}
 
-#  def get_remaining(quantity, int):
-#    return u'{1}{0:.2f}' (format(int, quantity))
-# return dict(get_remaining=get_remaining)
-#@app.context_processor
-#ef my_stock_remaining():
-  #  reminingstock = stockremaining
-   # user = reminingstock
-    #return dict(user=user)
 
     
-@app.context_processor
-def my_stock_remaining():
-    remaining_stock = stockremaining()  # Call the function to get the value
-    return dict(remaining_stock=remaining_stock)
-
 #@app.context_processor
-#def my_stock_remaining():
-  #  remaining_stock = stockremaining()  # Call the function to get the value
-   # return dict(remaining_stock=remaining_stock)
-
+#ef inject_stock_remaining():
+ #   remaining_stock = stockremaining()  # Call the function to get the value
+  #  return {'remaining_stock':remaining_stock}
 
 
 if __name__ == '__main__':

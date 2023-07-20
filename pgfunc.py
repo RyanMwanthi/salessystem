@@ -90,13 +90,27 @@ def add_stock(s):
    conn.commit
    return stock
 
-
-
 def stockremaining():
-   rem="SELECT * FROM remaining_stock "
-   cur.execute(rem)
+     
+    q = " SELECT * FROM remaining_stock;"
+    cur.execute(q)
+    res = cur.fetchall()
+    return res
+
+def remstock_perproduct(product_id=None):
+   rem="""SELECT sto.quantity - COALESCE(sum(sal.quantity), 0::bigint) AS remaining_stock
+    FROM products p
+    JOIN stock sto ON p.id = sto.pid
+    LEFT JOIN sales sal ON p.id = sal.pid
+    WHERE p.id =%s
+    GROUP BY sto.quantity;"""
+   cur.execute(rem,(product_id,))
    rm=cur.fetchall()
-   return(rm)
+   if rm:
+      return rm[0]
+   else:
+      return None
+
 
 
 

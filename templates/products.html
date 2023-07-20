@@ -114,7 +114,18 @@
                             <td>{{i[1]}}</td>
                             <td>{{i[2]}}</td>
                             <td>{{i[3]}}</td>
-                            <td>{{ remaining_stock }}</td>
+                            {% if remaining_stock(i.0)| int < 20 %}
+                            <td style="background-color: rgba(250, 4, 17, 0.979);">{{ remaining_stock(i.0) }}
+                            </td>
+                            {% elif remaining_stock(i.0) | int < 50 %} <td style="background-color: yellow;">{{
+                                remaining_stock(i.0) }}</td>
+                                {% elif remaining_stock(i.0) | int > 50 %}
+                                <td style="background-color:white;">{{ remaining_stock(i.0) }}</td>
+                                {% else %}
+                                <td style="background-color: white;">{{ remaining_stock(i.0) }}</td>
+                                {% endif %}
+                            
+                            
 
                             <!--<td>{{i[4]}}</td>-->
                             <td>
