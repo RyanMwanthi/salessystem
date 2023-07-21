@@ -65,7 +65,7 @@ def dashboard():
        prod.append(i[0])
        totalsales.append(i[1])
    bar_chart=pygal.Bar()
-   bar_chart.title="sales per product"
+   bar_chart.title="SALES PER PRODUCT"
    bar_chart.x_labels = prod
    bar_chart.add("Totalsales",totalsales)
    bar_chart=bar_chart.render_data_uri()

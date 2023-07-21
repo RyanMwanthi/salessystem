@@ -98,12 +98,18 @@ def stockremaining():
     return res
 
 def remstock_perproduct(product_id=None):
-   rem="""SELECT sto.quantity - COALESCE(sum(sal.quantity), 0::bigint) AS remaining_stock
-    FROM products p
-    JOIN stock sto ON p.id = sto.pid
-    LEFT JOIN sales sal ON p.id = sal.pid
-    WHERE p.id =%s
-    GROUP BY sto.quantity;"""
+   rem="""
+SELECT 
+            
+            COALESCE(s.stock_quantity, 0) - COALESCE(sa.sales_quantity, 0) AS closing_stock
+            FROM
+                (SELECT pid, SUM(quantity) AS stock_quantity FROM stock GROUP BY pid) AS s
+            LEFT JOIN
+                (SELECT pid, SUM(quantity) AS sales_quantity FROM sales GROUP BY pid) AS sa
+            ON s.pid = sa.pid
+            WHERE s.pid = %s
+            GROUP BY s.stock_quantity,sa.sales_quantity;
+   """
    cur.execute(rem,(product_id,))
    rm=cur.fetchall()
    if rm:
