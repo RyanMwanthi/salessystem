@@ -60,13 +60,21 @@ def add_user(v):
   conn.commit()
   return(add)
 
-def loggin_in():
-  q="SELECT email,password FROM users"
-  cur.execute(q)
-  ep=cur.fetchall()
-  print(ep)
+#def loggin_in():
+#  q="SELECT email,password FROM users"
+ # cur.execute(q)
+  #ep=cur.fetchall()
+  #print(ep)
   
-  return(ep)
+ # return(ep)
+
+def loggin_in(email):
+  q = "SELECT password FROM users WHERE email = %s"
+  cur.execute(q, (email,))
+  result = cur.fetchone() #fix login
+  if result is None:
+    return None
+  return result[0]
 
 
 def updateproducts(products):

@@ -114,11 +114,13 @@ def login():
    email = []
    password = []
    for i in login:
-         email, password = i
-         # print(email,password)
+    email, password = i
+    print(email,password)
    return render_template('login.html', login=login)
 
-    
+
+
+
 
 
 
@@ -182,10 +184,7 @@ def inject_remaining_stock():
 
 
     
-#@app.context_processor
-#ef inject_stock_remaining():
- #   remaining_stock = stockremaining()  # Call the function to get the value
-  #  return {'remaining_stock':remaining_stock}
+
 
 
 if __name__ == '__main__':

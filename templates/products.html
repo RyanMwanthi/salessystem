@@ -19,7 +19,7 @@
     <div class="container text-center">
         <div class="row align-items-start">
             <div class="col-lg-3 col-sm-12">
-                Nav Bar
+                
             </div>
 
             <!--Display Table-->
@@ -130,10 +130,10 @@
                             <!--<td>{{i[4]}}</td>-->
                             <td>
                                 <!-- Button trigger modal -->
-                                <a class="btn btn-primary" data-bs-toggle="modal"
-                                    data-bs-target="#editproducts{{i[0]}}">
-                                    <i class="fa fa-pencil-square" aria-hidden="true">Edit</i>
-                                </a>
+                                <a class="btn" data-bs-toggle="modal"
+                                data-bs-target="#editproducts{{i[0]}}">
+                                <img src="/static/pen.png" sizes="0px" alt="Edit">
+                             </a>
 
 
 
@@ -152,7 +152,7 @@
                                             <div class="modal-body">
                                                 <form action="/editproducts" method="POST">
                                                     <div class="mb-3">
-                                                        <label for="exampleInputPassword1" class="form-label">id</label>
+                                                        <!--<label for="exampleInputPassword1" class="form-label">id</label>-->
                                                         <input type="hidden" class="form-control"
                                                             id="exampleInputPassword1" name="id" value="{{i[0]}}">
                                                     </div>
