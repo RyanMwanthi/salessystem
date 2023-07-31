@@ -1,4 +1,5 @@
 import psycopg2
+from werkzeug.security import check_password_hash,generate_password_hash
 
 
 
@@ -53,12 +54,22 @@ def sales_per_day():
   return(sp)
 
 #adding users using register form
-def add_user(v):
-  vs=str(v)
-  add="INSERT INTO users (full_name,email,password,created_at)" "values" +vs
-  cur.execute(add)
-  conn.commit()
-  return(add)
+#def add_user(v):
+ # vs=str(v)
+ # add="INSERT INTO users (full_name,email,password,created_at)" "values" +vs
+  #3cur.execute(add)
+  #conn.commit()
+  #return(add)
+
+def add_user(user):
+    conn = psycopg2.connect("dbname=duka user=postgres password=12345")
+    cur = conn.cursor()
+    full_name, email, password, created_at = user
+    password_hash = generate_password_hash(password)
+    cur.execute("INSERT INTO users (full_name, email, password, created_at) VALUES (%s, %s, %s, %s)", (full_name, email, password_hash, created_at))
+    conn.commit()
+    cur.close()
+    conn.close()
 
 #def loggin_in():
 #  q="SELECT email,password FROM users"
@@ -68,14 +79,19 @@ def add_user(v):
   
  # return(ep)
 
-def loggin_in(email):
-  q = "SELECT password FROM users WHERE email = %s"
-  cur.execute(q, (email,))
-  result = cur.fetchone() #fix login
-  if result is None:
-    return None
-  return result[0]
+#def loggin_in(email):
+ # q = "SELECT password FROM users WHERE email = %s"
+  #cur.execute(q, (email,))
+  #result = cur.fetchone() #fix login
+  #if result is None:
+  #  return None
+  #return result[0]
 
+def login_user(email, password):
+    a="SELECT email,password FROM users;"
+    cur.execute(a)
+    data=cur.fetchall()
+    return data
 
 def updateproducts(products):
     

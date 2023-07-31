@@ -1,6 +1,9 @@
-from flask import Flask,render_template,request,redirect
-from pgfunc import fetch_data , insert_products, insert_sales,sales_per_product,stockremaining,sales_per_day,add_user,loggin_in,updateproducts,add_stock,remstock_perproduct
+from flask import Flask,render_template,request,redirect,flash,session
+from pgfunc import fetch_data , insert_products, insert_sales,sales_per_product,stockremaining,sales_per_day,add_user,updateproducts,add_stock,remstock_perproduct
 import pygal
+import psycopg2
+from werkzeug.security import generate_password_hash,check_password_hash
+from pgfunc import login_user
 
 
 # create an object called app
@@ -9,6 +12,11 @@ import pygal
 #__name__ is used to help flask where to access HTML files
 
 # CODE STARTS HERE!!
+
+#connect to data base to use login form
+conn = psycopg2.connect("dbname=duka user=postgres password=12345")
+cur = conn.cursor()
+ 
 
 
 app = Flask(__name__)
@@ -104,21 +112,41 @@ def dashboard():
       
    return render_template("dashboard.html",bar_chart=bar_chart,chart=chart,stockrem=stockrem)
 
-#@app.route("/login")
-#def login():
- #   return render_template("login.html")
 
-@app.route('/login', methods=["POST","GET"])
+
+#app.secret_key = '123456'
+@app.route('/login', methods=["POST", "GET"])
 def login():
-   login = loggin_in()
-   email = []
-   password = []
-   for i in login:
-    email, password = i
-    print(email,password)
-   return render_template('login.html', login=login)
+    if request.method == "POST":
+        email = request.form['email']
+        password = request.form['password']
+        admins=login_user(email,password)
+        if admins is not None:
 
+            for user in admins:
+                user_email=user[0]
+                user_password=user[1]
 
+            if user_email==user_password and check_password_hash (user_password,password):
+                session["login"] = True
+
+                flash ('Welcome!', category= "Congatulation")
+                return redirect("/products")
+
+        flash( 'invalid Email or Password', category="error")   
+        return redirect("/login")  
+    
+    
+    if session.get("login"):
+        return redirect("")
+
+    return render_template("login.html")   
+            
+
+        
+       
+        
+        
 
 
 
@@ -132,15 +160,26 @@ def register():
 
 
 
-@app.route("/signup",methods=["POST","GET"])
+#@app.route("/signup",methods=["POST","GET"])
+#def signup():
+ #   if request.method == "POST":
+  #      full_name=request.form["full_name"]     
+   #     email=request.form["email"]
+    #3    password=request.form["password"]
+      #  users=(full_name,email,password,'now')
+       # add_user(users)
+        #return redirect('/login')
+    
+
+@app.route("/signup", methods=["POST", "GET"])
 def signup():
     if request.method == "POST":
-        full_name=request.form["full_name"]     
-        email=request.form["email"]
-        password=request.form["password"]
-        users=(full_name,email,password,'now')
+        full_name = request.form["full_name"]
+        email = request.form["email"]
+        password = generate_password_hash(request.form["password"])
+        users = (full_name, email, password, "now")
         add_user(users)
-        return redirect('/login')
+        return redirect("/login")   
     
 @app.route('/editproducts', methods=["POST", "GET"])
 def editproducts():
