@@ -71,21 +71,41 @@ def add_user(user):
     cur.close()
     conn.close()
 
-#def loggin_in():
-#  q="SELECT email,password FROM users"
- # cur.execute(q)
-  #ep=cur.fetchall()
-  #print(ep)
+#Existing email
+def existing_email(email):
+  """
+  Checks if an email exists in PostgreSQL.
+  Args:
+    email: The email address to check.
+  Returns:
+    True if the email exists, False otherwise.
+  """
+  # Connect to PostgreSQL.
+  conn = psycopg2.connect(
   
- # return(ep)
-
-#def loggin_in(email):
- # q = "SELECT password FROM users WHERE email = %s"
-  #cur.execute(q, (email,))
-  #result = cur.fetchone() #fix login
-  #if result is None:
-  #  return None
-  #return result[0]
+      database="postgres",
+      user="duka",
+      password="12345")
+  # Create a cursor.
+  cursor = conn.cursor()
+  # Execute the query.
+  query = """
+    SELECT *
+    FROM users
+    WHERE email = %s
+  """
+  cursor.execute(query, (email,))
+  # Get the results.
+  results = cursor.fetchall()
+  # Close the cursor.
+  cursor.close()
+  # Close the connection.
+  conn.close()
+  # Return the results.
+  if results:
+    return True
+  else:
+    return False
 
 def login_user(email, password):
     a="SELECT email,password FROM users;"
@@ -143,11 +163,9 @@ SELECT
 
 
 
-
-#def stockremaining(remaining_stock):
- #  id = remaining_stock[0]
-  # cur.execute("SELECT remaining_stock FROM remaining_stock WHERE id = %s", (id,))
-   #result = cur.fetchone()
-   #r3eturn result[0] if result else None
-
-  
+def getpid():
+   q="SELECT id FROM products"
+   cur.execute(q)
+   results = cur.fetchall()
+   return results
+   

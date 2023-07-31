@@ -1,9 +1,13 @@
-from flask import Flask,render_template,request,redirect,flash,session
+from flask import Flask,render_template,request,redirect,flash,session,url_for
 from pgfunc import fetch_data , insert_products, insert_sales,sales_per_product,stockremaining,sales_per_day,add_user,updateproducts,add_stock,remstock_perproduct
 import pygal
 import psycopg2
 from werkzeug.security import generate_password_hash,check_password_hash
-from pgfunc import login_user
+from pgfunc import login_user,existing_email,getpid
+from barcode import Code128 
+from barcode.writer import ImageWriter 
+import barcode
+from PIL import Image
 
 
 # create an object called app
@@ -114,7 +118,7 @@ def dashboard():
 
 
 
-#app.secret_key = '123456'
+app.secret_key = '12345'
 @app.route('/login', methods=["POST", "GET"])
 def login():
     if request.method == "POST":
@@ -160,26 +164,23 @@ def register():
 
 
 
-#@app.route("/signup",methods=["POST","GET"])
-#def signup():
- #   if request.method == "POST":
-  #      full_name=request.form["full_name"]     
-   #     email=request.form["email"]
-    #3    password=request.form["password"]
-      #  users=(full_name,email,password,'now')
-       # add_user(users)
-        #return redirect('/login')
     
-
 @app.route("/signup", methods=["POST", "GET"])
 def signup():
     if request.method == "POST":
         full_name = request.form["full_name"]
         email = request.form["email"]
         password = generate_password_hash(request.form["password"])
-        users = (full_name, email, password, "now")
-        add_user(users)
-        return redirect("/login")   
+        if existing_email(email):
+
+            return "Email already exists"
+        else:
+            users = (full_name, email, password, "now")
+            add_user(users)
+            return redirect("/login")
+    else:
+        return render_template("register.html")
+    
     
 @app.route('/editproducts', methods=["POST", "GET"])
 def editproducts():
@@ -221,6 +222,19 @@ def inject_remaining_stock():
       return stock[0] if stock is not None else int('0')
     return {'remaining_stock': remaining_stock}
 
+
+@app.context_processor
+def generate_barcode():
+    id_list = getpid()
+    barcode_paths = []
+    for pid_tuple in id_list:
+        pid = pid_tuple[0]
+        code = Code128(str(pid), writer=ImageWriter())
+        barcode_path = f"static/barcodes/{pid}.png"
+       
+        code.save(barcode_path)
+        barcode_paths.append(barcode_path)
+    return {'generate_barcode': generate_barcode}
 
     
 
