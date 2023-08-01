@@ -1,4 +1,4 @@
-from flask import Flask,render_template,request,redirect,flash,session,url_for
+from flask import Flask,render_template,request,redirect,flash,session,url_for,g
 from pgfunc import fetch_data , insert_products, insert_sales,sales_per_product,stockremaining,sales_per_day,add_user,updateproducts,add_stock,remstock_perproduct
 import pygal
 import psycopg2
@@ -8,6 +8,9 @@ from barcode import Code128
 from barcode.writer import ImageWriter 
 import barcode
 from PIL import Image
+import os
+os.urandom(24)
+
 
 
 # create an object called app
@@ -26,11 +29,18 @@ cur = conn.cursor()
 app = Flask(__name__)
  
 
-@app.route("/")
+@app.route("/", methods=["GET"])
 def home():
-    
-     return render_template("index.html")
+    if g.user:
+        return render_template("index.html",user=session["user"])
+    return redirect(url_for("login"))
 
+@app.before_request
+def before_request():
+    g.user= None
+
+    if 'user' in session:
+        g.user=session["user"]
 
 @app.route("/products")
 def products():
@@ -118,34 +128,28 @@ def dashboard():
 
 
 
-app.secret_key = '12345'
+app.secret_key = os.urandom(24)
 @app.route('/login', methods=["POST", "GET"])
 def login():
     if request.method == "POST":
-        email = request.form['email']
-        password = request.form['password']
-        admins=login_user(email,password)
-        if admins is not None:
-
-            for user in admins:
-                user_email=user[0]
-                user_password=user[1]
-
-            if user_email==user_password and check_password_hash (user_password,password):
-                session["login"] = True
-
-                flash ('Welcome!', category= "Congatulation")
-                return redirect("/products")
-
-        flash( 'invalid Email or Password', category="error")   
-        return redirect("/login")  
-    
-    
-    if session.get("login"):
-        return redirect("")
-
-    return render_template("login.html")   
+        session.pop("user", None)
+        
+        # Retrieve the user's email from the form
+        email = request.form["email"]
+        
+        # Retrieve the user's hashed password from the database
+        cur.execute("SELECT password FROM users WHERE email = %s", (email,))
+        row = cur.fetchone()
+        if row is not None:
+            hashed_password = row[0]
             
+            # Check if the password matches the hashed password
+            if check_password_hash(hashed_password, request.form["password"]):
+                session['user'] = email
+                return redirect(url_for('index'))
+    
+    return render_template("login.html")
+
 
         
        
