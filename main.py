@@ -169,21 +169,22 @@ def register():
 
 
     
-@app.route("/signup", methods=["POST", "GET"])
-def signup():
-    if request.method == "POST":
-        full_name = request.form["full_name"]
-        email = request.form["email"]
-        password = generate_password_hash(request.form["password"])
-        if existing_email(email):
-
-            return "Email already exists"
-        else:
-            users = (full_name, email, password, "now")
-            add_user(users)
-            return redirect("/login")
-    else:
-        return render_template("register.html")
+@app.route('/signup', methods=["POST", "GET"])
+def adduser():
+   error1 = None
+   if request.method == "POST":
+      full_name = request.form["full_name"]
+      email = request.form["email"]
+      password  = request.form["password"]
+     
+      hashed_password = generate_password_hash(password)
+     
+      users=(full_name,email,hashed_password,'now()')
+      add_user(users)
+      error1="Account Created!"
+      return redirect("/login")
+     
+   return render_template("register.html", error1=error1)
     
     
 @app.route('/editproducts', methods=["POST", "GET"])

@@ -42,6 +42,13 @@
                 <label for="Password">Password</label>
                 <input type="password" class="form-control" id="exampleInputPassword" name="password">
             </div>
+            <div class="form-group">
+                {% if error1 %}
+                <p>
+                <h4 style="color: rgb(21, 218, 80);">{{ error1 }}</h4>
+                </p>
+                {% endif %}
+            </div>
             <button type="submit" class="btn btn-primary" name="create">Sign up</button>
         </form>
     </div>
