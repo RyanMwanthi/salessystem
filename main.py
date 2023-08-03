@@ -145,14 +145,17 @@ def login():
         # cheking account existing in in SQL
         cur.execute("SELECT * FROM users WHERE email = %s", (email,))
         user=cur.fetchone()
+        print(user)
+        
+        #PRINT WORKING CAN SEE USERS DETAILS IN TERMINAL
 
         if user:
             password_rs=user[2]
-            print(password_rs)
+            print(password_rs) #PASSWORD VISIBLE IN TERMNAL
 
             if check_password_hash(password_rs,password):
                 session['loggedin'] = True
-                #session['name'] = user['name']
+                session['name'] = user['name']
                 session['email'] = user['email']
 
                 return redirect(url_for('index'))
