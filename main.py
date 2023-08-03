@@ -3,13 +3,13 @@ from pgfunc import fetch_data , insert_products, insert_sales,sales_per_product,
 import pygal
 import psycopg2
 from werkzeug.security import generate_password_hash,check_password_hash
-from pgfunc import login_user,existing_email,getpid
+from pgfunc import getpid
+from flask_session import Session
 from barcode import Code128 
 from barcode.writer import ImageWriter 
 import barcode
 from PIL import Image
-import os
-os.urandom(24)
+import secrets
 
 
 
@@ -27,20 +27,20 @@ cur = conn.cursor()
 
 
 app = Flask(__name__)
- 
 
-@app.route("/", methods=["GET"])
+
+@app.route("/")
 def home():
-    if g.user:
-        return render_template("index.html",user=session["user"])
-    return redirect(url_for("login"))
+   
+    
+    return render_template('index.html')
 
-@app.before_request
-def before_request():
-    g.user= None
-
-    if 'user' in session:
-        g.user=session["user"]
+#@app.before_request
+#def before_request():
+#    g.user= None
+#
+#   if 'user' in session:
+#      g.user=session["user"]
 
 @app.route("/products")
 def products():
@@ -127,28 +127,43 @@ def dashboard():
    return render_template("dashboard.html",bar_chart=bar_chart,chart=chart,stockrem=stockrem)
 
 
+# Generate a 32-character hexadecimal string
+secret_key = secrets.token_hex(16)
 
-app.secret_key = os.urandom(24)
-@app.route('/login', methods=["POST", "GET"])
+# Set the secret key for your application
+app.secret_key = secret_key
+@app.route("/login",methods=["POST","GET"])
 def login():
-    if request.method == "POST":
-        session.pop("user", None)
-        
-        # Retrieve the user's email from the form
-        email = request.form["email"]
-        
-        # Retrieve the user's hashed password from the database
-        cur.execute("SELECT password FROM users WHERE email = %s", (email,))
-        row = cur.fetchone()
-        if row is not None:
-            hashed_password = row[0]
-            
-            # Check if the password matches the hashed password
-            if check_password_hash(hashed_password, request.form["password"]):
-                session['user'] = email
+    #cursor= conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+    #checking email and password are in form
+    if request.method== 'POST' and 'email' in request.form and 'password' in request.form:
+        email=request.form["email"]
+        password= request.form["password"]
+        print(password)
+
+        # cheking account existing in in SQL
+        cur.execute("SELECT * FROM users WHERE email = %s", (email,))
+        user=cur.fetchone()
+
+        if user:
+            password_rs=user[2]
+            print(password_rs)
+
+            if check_password_hash(password_rs,password):
+                session['loggedin'] = True
+                #session['name'] = user['name']
+                session['email'] = user['email']
+
                 return redirect(url_for('index'))
+            else:
+                flash('Incorrect email/password')
+
+        else:
+            flash('Incorrect email/password')
     
     return render_template("login.html")
+            
 
 
         

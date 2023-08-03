@@ -28,7 +28,7 @@
 <body>
   <div class="container col-lg-6 col-sm-12">
     <h2>LogIn</h2>
-    <form action="/products" method="POST">
+    <form action="/login" method="POST">
       <div class="mb-3">
         <label for="email" class="form-label">Email</label>
         <input type="email" class="form-control" id= "email" placeholder="Enter email address" name="email" required>
@@ -46,9 +46,18 @@
       <div>Dont have an account?</div>
       <button class="btn submits sign-up btn"><a href="/register">Sign up Here</a></button>
     </form>
-    {% if error %}
-    <p style="color: rgb(248, 8, 8);">{{ error }}</p>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+      {{ message }}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span arial-hidden="true">x</span>
+      </button>
+    </div>
+    {% endfor %}
     {% endif %}
+    {% endwith %}
 
     
   </div>

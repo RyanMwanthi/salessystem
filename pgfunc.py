@@ -132,7 +132,7 @@ def add_stock(s):
    stock="INSERT INTO stock(pid,quantity,created_at)" "VALUES" + st
    cur.execute(stock)
    conn.commit
-   return stock
+   return stock   
 
 def stockremaining():
      
