@@ -32,9 +32,9 @@ app = Flask(__name__)
 
 @app.route("/")
 def home():
-   
-    
-    return render_template('index.html')
+    if 'loggedin' in session:
+        return render_template('index.html',username=session['username'])
+    return redirect("/login")
 
 #@app.before_request
 #def before_request():
@@ -128,42 +128,35 @@ def dashboard():
    return render_template("dashboard.html",bar_chart=bar_chart,chart=chart,stockrem=stockrem)
 
 
-# Generate a 32-character hexadecimal string
-secret_key = secrets.token_hex(16)
 
-# Set the secret key for your application
+secret_key = secrets.token_hex(16)
 app.secret_key = secret_key
 @app.route("/login",methods=["POST","GET"])
 def login():
-    #cur= conn.cursor(cursor_factory=psycopg2.extensions.connection)
+  
 
     #checking email and password are in form
-    if request.method== 'POST' and 'email' in request.form and 'password' in request.form:
+    if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
         username=request.form["username"]
         password= request.form["password"]
         print(password)
-
+        print(username) 
         # cheking account existing in in SQL
         cur.execute("SELECT * FROM admins WHERE username = %s", (username,))
         user=cur.fetchone()
-        print(user)
-        
+        print(user) 
         #PRINT WORKING CAN SEE USERS DETAILS IN TERMINAL
-
         if user:
-            password_rs=user[2]
-            print(password_rs) #PASSWORD VISIBLE IN TERMNAL
+            password_rs=user[3]
+            print(password_rs) 
 
             if check_password_hash(password_rs,password):
                 session['loggedin'] = True
-                session['name'] = user['fullname']
-                session['email'] = user['email']
-                session['password'] = user['password']
-
-                return render_template("index.html") #redirect(url_for('index'))
+                session['id']=user[0]
+                session['username']= user[2]   
+                return redirect("/")
             else:
                 flash('Incorrect email/password')
-
         else:
             flash("user desnot exist")
     
@@ -181,10 +174,6 @@ def login():
 
 
 
-
-@app.route("/register") 
-def register():
-   return render_template('register.html')
 
 
 
