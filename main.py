@@ -1,5 +1,5 @@
 from flask import Flask,render_template,request,redirect,flash,session,url_for,g
-from pgfunc import fetch_data , insert_products, insert_sales,sales_per_product,stockremaining,sales_per_day,add_user,updateproducts,add_stock,remstock_perproduct
+from pgfunc import fetch_data , insert_products, insert_sales,sales_per_product,stockremaining,sales_per_day,updateproducts,add_stock,remstock_perproduct
 import pygal
 import psycopg2
 from werkzeug.security import generate_password_hash,check_password_hash
@@ -10,6 +10,7 @@ from barcode.writer import ImageWriter
 import barcode
 from PIL import Image
 import secrets
+import re
 
 
 
@@ -134,16 +135,16 @@ secret_key = secrets.token_hex(16)
 app.secret_key = secret_key
 @app.route("/login",methods=["POST","GET"])
 def login():
-    #cursor= conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    #cur= conn.cursor(cursor_factory=psycopg2.extensions.connection)
 
     #checking email and password are in form
     if request.method== 'POST' and 'email' in request.form and 'password' in request.form:
-        email=request.form["email"]
+        username=request.form["username"]
         password= request.form["password"]
         print(password)
 
         # cheking account existing in in SQL
-        cur.execute("SELECT * FROM users WHERE email = %s", (email,))
+        cur.execute("SELECT * FROM admins WHERE username = %s", (username,))
         user=cur.fetchone()
         print(user)
         
@@ -155,15 +156,16 @@ def login():
 
             if check_password_hash(password_rs,password):
                 session['loggedin'] = True
-                session['name'] = user['name']
+                session['name'] = user['fullname']
                 session['email'] = user['email']
+                session['password'] = user['password']
 
-                return redirect(url_for('index'))
+                return render_template("index.html") #redirect(url_for('index'))
             else:
                 flash('Incorrect email/password')
 
         else:
-            flash('Incorrect email/password')
+            flash("user desnot exist")
     
     return render_template("login.html")
             
@@ -189,20 +191,58 @@ def register():
     
 @app.route('/signup', methods=["POST", "GET"])
 def adduser():
-   error1 = None
-   if request.method == "POST":
-      full_name = request.form["full_name"]
-      email = request.form["email"]
-      password  = request.form["password"]
+    if request.method == 'POST' and 'username' in request.form and 'password' in request.form and 'email' in request.form:
+        fullname= request.form ['fullname']
+        username= request.form['username']
+        password= request.form['password']
+        email= request.form['email']
+
+        _hashed_password = generate_password_hash(password)
+        #USERNAME EXISTS IN DATABASE
+        cur.execute ("SELECT * FROM admins WHERE username = %s",(username,))
+        admin=cur.fetchone()
+        print (admin)
+        cur.execute("SELECT * FROM admins WHERE email = %s",(email,))
+        emails=cur.fetchone()
+        #Username Validation   
+        if admin:
+            flash("Username is already in use")
+        # Email validation
+        elif emails:
+            flash("Email already exists")
+
+        elif not re.match(r'[^@]+@[^@]+\.[^@]+',email):
+            flash("invalid email address") 
+                
+        elif  not re.match(r'[A-Za-z0-9]+',username):
+            flash("Username must contain charachters and numbers")
+       
+        elif not username or not password or not email:
+             flash("Please fill out the form")    
+        else:
+            cur.execute("INSERT INTO admins (fullname,username,password,email) VALUES(%s,%s,%s,%s)",(fullname,username,_hashed_password,email))   
+            conn.commit()
+            flash ("You have registered succesfully!") 
+    elif request.method == "POST":
+        flash ("Please fill out the form")
+
+    return render_template("register.html")   
+ 
+# def adduser():
+#    error1 = None
+#    if request.method == "POST":
+#       full_name = request.form["full_name"]
+#       email = request.form["email"]
+#       password  = request.form["password"]
      
-      hashed_password = generate_password_hash(password)
+#       hashed_password = generate_password_hash(password)
      
-      users=(full_name,email,hashed_password,'now()')
-      add_user(users)
-      error1="Account Created!"
-      return redirect("/login")
+#       users=(full_name,email,hashed_password,'now()')
+#       add_user(users)
+#       error1="Account Created!"
+#       return redirect("/login")
      
-   return render_template("register.html", error1=error1)
+#    return render_template("register.html", error1=error1)
     
     
 @app.route('/editproducts', methods=["POST", "GET"])

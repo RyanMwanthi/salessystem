@@ -53,59 +53,22 @@ def sales_per_day():
   print(sp)
   return(sp)
 
-#adding users using register form
-#def add_user(v):
- # vs=str(v)
- # add="INSERT INTO users (full_name,email,password,created_at)" "values" +vs
-  #3cur.execute(add)
-  #conn.commit()
-  #return(add)
 
-def add_user(user):
-    conn = psycopg2.connect("dbname=duka user=postgres password=12345")
-    cur = conn.cursor()
-    full_name, email, password, created_at = user
-    password_hash = generate_password_hash(password)
-    cur.execute("INSERT INTO users (full_name, email, password, created_at) VALUES (%s, %s, %s, %s)", (full_name, email, password_hash, created_at))
-    conn.commit()
-    cur.close()
-    conn.close()
+# def add_user(user):
+#     conn = psycopg2.connect("dbname=duka user=postgres password=12345")
+#     cur = conn.cursor()
+#     full_name, email, password, created_at = user
+#     password_hash = generate_password_hash(password)
+#     cur.execute("INSERT INTO users (full_name, email, password, created_at) VALUES (%s, %s, %s, %s)", (full_name, email, password_hash, created_at))
+#     conn.commit()
+#     cur.close()
+#     conn.close()
 
-#Existing email
-def existing_email(email):
-  """
-  Checks if an email exists in PostgreSQL.
-  Args:
-    email: The email address to check.
-  Returns:
-    True if the email exists, False otherwise.
-  """
-  # Connect to PostgreSQL.
-  conn = psycopg2.connect(
-  
-      database="postgres",
-      user="duka",
-      password="12345")
-  # Create a cursor.
-  cursor = conn.cursor()
-  # Execute the query.
-  query = """
-    SELECT *
-    FROM users
-    WHERE email = %s
-  """
-  cursor.execute(query, (email,))
-  # Get the results.
-  results = cursor.fetchall()
-  # Close the cursor.
-  cursor.close()
-  # Close the connection.
-  conn.close()
-  # Return the results.
-  if results:
-    return True
-  else:
-    return False
+
+
+# admins / users register
+# def register():
+   
 
 def login_user(email, password):
     a="SELECT email,password FROM users;"
