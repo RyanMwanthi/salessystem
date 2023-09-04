@@ -133,8 +133,6 @@ secret_key = secrets.token_hex(16)
 app.secret_key = secret_key
 @app.route("/login",methods=["POST","GET"])
 def login():
-  
-
     #checking email and password are in form
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
         username=request.form["username"]
@@ -161,23 +159,7 @@ def login():
             flash("user desnot exist")
     
     return render_template("login.html")
-            
-
-
-        
-       
-        
-        
-
-
-
-
-
-
-
-
-
-    
+                
 @app.route('/signup', methods=["POST", "GET"])
 def adduser():
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form and 'email' in request.form:
@@ -185,18 +167,17 @@ def adduser():
         username= request.form['username']
         password= request.form['password']
         email= request.form['email']
-
         _hashed_password = generate_password_hash(password)
-        #USERNAME EXISTS IN DATABASE
+        #Check username & email in DB
         cur.execute ("SELECT * FROM admins WHERE username = %s",(username,))
         admin=cur.fetchone()
-        print (admin)
+
         cur.execute("SELECT * FROM admins WHERE email = %s",(email,))
         emails=cur.fetchone()
-        #Username Validation   
+      
         if admin:
             flash("Username is already in use")
-        # Email validation
+        
         elif emails:
             flash("Email already exists")
 
@@ -214,26 +195,9 @@ def adduser():
             flash ("You have registered succesfully!") 
     elif request.method == "POST":
         flash ("Please fill out the form")
-
+        
     return render_template("register.html")   
- 
-# def adduser():
-#    error1 = None
-#    if request.method == "POST":
-#       full_name = request.form["full_name"]
-#       email = request.form["email"]
-#       password  = request.form["password"]
      
-#       hashed_password = generate_password_hash(password)
-     
-#       users=(full_name,email,hashed_password,'now()')
-#       add_user(users)
-#       error1="Account Created!"
-#       return redirect("/login")
-     
-#    return render_template("register.html", error1=error1)
-    
-    
 @app.route('/editproducts', methods=["POST", "GET"])
 def editproducts():
    if request.method=="POST":

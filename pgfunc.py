@@ -1,16 +1,12 @@
 import psycopg2
 from werkzeug.security import check_password_hash,generate_password_hash
 
-
-
-
 try:
   conn=psycopg2.connect("dbname=duka user=postgres password=12345")
 
   cur = conn.cursor()
 except Exception as e:
   print(e)  
-
 
 def fetch_data(tbname):
   try:
@@ -35,10 +31,6 @@ def insert_sales(v):
   conn.commit()
   return(q)
 
-
-
-#sales products = spquery
-
 def sales_per_product():
   spquery="SELECT * FROM sales_per_product"
   cur.execute(spquery)
@@ -51,24 +43,7 @@ def sales_per_day():
   cur.execute(spdayquery)
   sp=cur.fetchall()
   print(sp)
-  return(sp)
-
-
-# def add_user(user):
-#     conn = psycopg2.connect("dbname=duka user=postgres password=12345")
-#     cur = conn.cursor()
-#     full_name, email, password, created_at = user
-#     password_hash = generate_password_hash(password)
-#     cur.execute("INSERT INTO users (full_name, email, password, created_at) VALUES (%s, %s, %s, %s)", (full_name, email, password_hash, created_at))
-#     conn.commit()
-#     cur.close()
-#     conn.close()
-
-
-
-# admins / users register
-# def register():
-   
+  return(sp) 
 
 def login_user(email, password):
     a="SELECT email,password FROM users;"
@@ -88,7 +63,6 @@ def updateproducts(products):
         cur.execute(editquery, (name, buying_price, selling_price, id))
         conn.commit()
         return editquery
-
 
 def add_stock(s):
    st=str(s)
@@ -131,4 +105,4 @@ def getpid():
    cur.execute(q)
    results = cur.fetchall()
    return results
-   
+
